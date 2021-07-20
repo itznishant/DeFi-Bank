@@ -1,7 +1,7 @@
 import { tokens, ether, ETHER_ADDRESS, EVM_REVERT, wait } from './helpers'
 
 const Token = artifacts.require('./Token')
-const DecentralizedBank = artifacts.require('./dBank')
+const DecentralisedBank = artifacts.require('./dBank')
 
 require('chai')
   .use(require('chai-as-promised'))
@@ -13,18 +13,18 @@ contract('dBank', ([deployer, user]) => {
 
   beforeEach(async () => {
     token = await Token.new()
-    dbank = await DecentralizedBank.new(token.address)
+    dbank = await DecentralisedBank.new(token.address)
     await token.passMinterRole(dbank.address, {from: deployer})
   })
 
   describe('testing token contract...', () => {
     describe('success', () => {
       it('checking token name', async () => {
-        expect(await token.name()).to.be.eq('Decentralized Bank Currency')
+        expect(await token.name()).to.be.eq('Deposit Interest Token')
       })
 
       it('checking token symbol', async () => {
-        expect(await token.symbol()).to.be.eq('DBC')
+        expect(await token.symbol()).to.be.eq('DIT')
       })
 
       it('checking token initial total supply', async () => {
@@ -56,11 +56,12 @@ contract('dBank', ([deployer, user]) => {
       })
 
       it('balance should increase', async () => {
-        expect(Number(await dbank.etherBalanceOf(user))).to.eq(10**16)
+        expect(Number(await dbank.getEtherBalance(user))).to.eq(10**16)
       })
 
       it('deposit time should > 0', async () => {
         expect(Number(await dbank.depositStart(user))).to.be.above(0)
+        // console.log(Number(await dbank.depositStart(user)))
       })
 
       it('deposit status should eq true', async () => {
@@ -69,8 +70,11 @@ contract('dBank', ([deployer, user]) => {
     })
 
     describe('failure', () => {
-      it('depositing should be rejected', async () => {
+      it('deposit should be rejected for small amount', async () => {
         await dbank.deposit({value: 10**15, from: user}).should.be.rejectedWith(EVM_REVERT) //to small amount
+      })
+      it('deposit should be rejected for 1000 Wei', async () => {
+        await dbank.deposit({value: 1000, from: user}).should.be.rejectedWith(EVM_REVERT) //to small amount
       })
     })
   })
@@ -91,7 +95,7 @@ contract('dBank', ([deployer, user]) => {
 
       it('balances should decrease', async () => {
         expect(Number(await web3.eth.getBalance(dbank.address))).to.eq(0)
-        expect(Number(await dbank.etherBalanceOf(user))).to.eq(0)
+        expect(Number(await dbank.getEtherBalance(user))).to.eq(0)
       })
 
       it('user should receive ether back', async () => {
@@ -106,13 +110,13 @@ contract('dBank', ([deployer, user]) => {
         expect(balance).to.be.below(interestPerSecond*4)
       })
 
-      it('depositer data should be reseted', async () => {
+      it('depositer data should reset', async () => {
         expect(Number(await dbank.depositStart(user))).to.eq(0)
-        expect(Number(await dbank.etherBalanceOf(user))).to.eq(0)
+        expect(Number(await dbank.getEtherBalance(user))).to.eq(0)
         expect(await dbank.isDeposited(user)).to.eq(false)
       })
     })
-
+  })
     describe('failure', () => {
       it('withdrawing should be rejected', async () =>{
         await dbank.deposit({value: 10**16, from: user}) //0.01 ETH
@@ -121,4 +125,3 @@ contract('dBank', ([deployer, user]) => {
       })
     })
   })
-})

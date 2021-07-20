@@ -2,7 +2,7 @@ import { Tabs, Tab } from 'react-bootstrap'
 import dBank from '../abis/dBank.json'
 import React, { Component } from 'react';
 import Token from '../abis/Token.json'
-import dbank from '../dbank.png';
+import dbank from '../defibank.png';
 import Web3 from 'web3';
 import './App.css';
 
@@ -15,8 +15,13 @@ class App extends Component {
   }
 
   async loadBlockchainData(dispatch) {
+    if(typeof window.ethereum != 'undefined') {
 
-    //check if MetaMask exists
+      const web3 = new Web3(window.ethereum)
+  } else {     //check if MetaMask exists
+    window.alert('Please install Metamask!')
+
+  }
 
       //assign to values to variables: web3, netId, accounts
 
@@ -56,12 +61,12 @@ class App extends Component {
         <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
           <a
             className="navbar-brand col-sm-3 col-md-2 mr-0"
-            href="http://www.dappuniversity.com/bootcamp"
+            href="https://github.com/itznishant/"
             target="_blank"
             rel="noopener noreferrer"
           >
         <img src={dbank} className="App-logo" alt="logo" height="32"/>
-          <b>dBank</b>
+          <b> GitHub </b>
         </a>
         </nav>
         <div className="container-fluid mt-5 text-center">
@@ -73,8 +78,8 @@ class App extends Component {
             <main role="main" className="col-lg-12 d-flex text-center">
               <div className="content mr-auto ml-auto">
               <Tabs defaultActiveKey="profile" id="uncontrolled-tab-example">
-                {/*add Tab deposit*/}
-                {/*add Tab withdraw*/}
+                {/*add Tab deposit ETH !*/}
+                {/*add Tab withdraw ETH !*/}
               </Tabs>
               </div>
             </main>
