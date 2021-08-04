@@ -22,7 +22,8 @@ class App extends Component {
 
     if(typeof accounts[0] !== 'undefined') {
       const balance = await web3.eth.getBalance(accounts[0])
-      this.setState({ account: accounts[0] , balance, web3 })
+      const ethBalance   = web3.utils.fromWei(balance, 'ether')
+      this.setState({ account: accounts[0] , balance, ethBalance, web3 })
     } else {  
       window.alert('Please login with Metamask!')
     }
@@ -32,9 +33,9 @@ class App extends Component {
       const token = new web3.eth.Contract(Token.abi, Token.networks[netId].address)
       const dbank = new web3.eth.Contract(dBank.abi, dBank.networks[netId].address)
       const dBankAddress = dBank.networks[netId].address
-      this.setState({ token, dbank, dBankAddress })
-      const tokenBalance = await token.methods.balanceOf(this.state.account).call()
-      console.log(web3.utils.fromWei(tokenBalance))
+      const tokenBalance = await web3.utils.fromWei(await token.methods.balanceOf(this.state.account).call(), 'ether')
+      const depositETHbalance  = await web3.utils.fromWei(await dbank.methods.getEtherBalance(this.state.account).call(), 'ether')
+      this.setState({ token, dbank, dBankAddress, tokenBalance, depositETHbalance })
 
       } catch (e) {
       console.log("Error", e);
@@ -52,6 +53,7 @@ class App extends Component {
     if(this.state.dbank!=='undefined') { 
       try{
         await this.state.dbank.methods.deposit().send({from: this.state.account, value: amount.toString()})
+
       } catch(e) {
         console.log('Error occured in deposit: ', e)
       }
@@ -77,6 +79,9 @@ class App extends Component {
       token: null,
       dbank: null,
       balance: 0,
+      ethBalance: 0,
+      depositETHbalance: 0,
+      tokenBalance: 0,
       dBankAddress: null
     }
   }
@@ -99,7 +104,7 @@ class App extends Component {
         <br></br>
           <h1>Welcome to dBank! </h1>
           <h2>{this.state.account}</h2>
-          <h4>{this.state.balance}</h4>
+          
           <br></br>
           <div className="row">
             <main role="main" className="col-lg-12 d-flex text-center">
@@ -108,11 +113,11 @@ class App extends Component {
                 <Tab eventKey="deposit" title="Deposit ETH">
                   <div>
                     <br></br>
+                    <h5>Current Ether balance: {this.state.ethBalance} ETH</h5>                    
+                    <br></br>
                     <h5>How much do you want to deposit?</h5>
                     <br></br>
-                    (min. amount is <b>0.01</b> ETH)
-                    <br></br>
-                    (Only <b>1</b> deposit is possible at the time)
+                    <h6>Note: Min. deposit is <b>0.01</b> ETH; Only <b>1</b> deposit is possible currently</h6>
                     <br></br>
                     <form onSubmit={(e) => {
                       e.preventDefault()
@@ -139,8 +144,11 @@ class App extends Component {
 
                 <Tab eventKey="withdraw" title="Withdraw ETH">
                     <br></br>
-                    <h5>Do you want to withdraw + take interest?</h5>
+                    <h5><b>Do you want to withdraw + take interest? </b></h5>
                     <br></br>
+                    <h5> Deposit balance: {this.state.depositETHbalance} ETH</h5>
+                    <br></br>
+                    <h5> Interest balance: {this.state.tokenBalance} Tokens</h5>
                     <br></br>
                   <div>
                     <button type='submit' className='btn btn-dark' onClick={(e) => this.withdraw(e)}>WITHDRAW!</button>

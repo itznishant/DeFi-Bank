@@ -35,14 +35,15 @@ contract dBank {
     //check if msg.sender deposit status is true
     require(isDeposited[msg.sender] == true, 'Error: No previous deposit');
     uint userBalance = getEtherBalance[msg.sender];
-    
+
     uint depositTime = block.timestamp - depositStart[msg.sender];
     //calc accrued interest
     uint interestPerSecond = 31668017 * (userBalance / 1e16); // 10% APY per year for 0.01 ETH
     uint interest = interestPerSecond * depositTime;
 
-    msg.sender.transfer(userBalance);
     token.mint(msg.sender, interest);
+
+    msg.sender.transfer(userBalance);
     
     depositStart[msg.sender] = 0;
     getEtherBalance[msg.sender] = 0;
