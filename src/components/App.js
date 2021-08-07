@@ -6,8 +6,6 @@ import dbank from '../defibank.png';
 import Web3 from 'web3';
 import './App.css';
 
-//h0m3w0rk - add new tab to check accrued interest
-
 class App extends Component {
 
   async componentWillMount() {
@@ -20,33 +18,30 @@ class App extends Component {
       const netId = await web3.eth.net.getId()
       const accounts = await web3.eth.getAccounts()
 
-    if(typeof accounts[0] !== 'undefined') {
-      const balance = await web3.eth.getBalance(accounts[0])
-      const ethBalance   = web3.utils.fromWei(balance, 'ether')
-      this.setState({ account: accounts[0] , balance, ethBalance, web3 })
-    } else {  
-      window.alert('Please login with Metamask!')
-    }
+      if(typeof accounts[0] !== 'undefined') {
+        const balance = await web3.eth.getBalance(accounts[0])
+        const ethBalance   = web3.utils.fromWei(balance, 'ether')
+        this.setState({ account: accounts[0] , balance, ethBalance, web3 })
+      } else {  
+        window.alert('Please login to Metamask !')
+      }
     
-    //load contracts
-    try {
-      const token = new web3.eth.Contract(Token.abi, Token.networks[netId].address)
-      const dbank = new web3.eth.Contract(dBank.abi, dBank.networks[netId].address)
-      const dBankAddress = dBank.networks[netId].address
-      const tokenBalance = await web3.utils.fromWei(await token.methods.balanceOf(this.state.account).call(), 'ether')
-      const depositETHbalance  = await web3.utils.fromWei(await dbank.methods.getEtherBalance(this.state.account).call(), 'ether')
-      this.setState({ token, dbank, dBankAddress, tokenBalance, depositETHbalance })
-
+      //load contracts
+      try {
+        const token = new web3.eth.Contract(Token.abi, Token.networks[netId].address)
+        const dbank = new web3.eth.Contract(dBank.abi, dBank.networks[netId].address)
+        const dBankAddress = dBank.networks[netId].address
+        const tokenBalance = await web3.utils.fromWei(await token.methods.balanceOf(this.state.account).call(), 'ether')
+        const depositETHbalance  = await web3.utils.fromWei(await dbank.methods.getEtherBalance(this.state.account).call(), 'ether')
+        this.setState({ token, dbank, dBankAddress, tokenBalance, depositETHbalance })
       } catch (e) {
-      console.log("Error", e);
-      window.alert('Warning! Contracts not deployed to selected network!')
-  }
+        console.log("Error", e);
+        window.alert('Warning! Contracts not deployed to selected network!')
+      }
 
-
-  } else {
-    window.alert('Please install Metamask!')
-  }
-
+    } else {
+    window.alert('Please install Metamask from metamask.io and login!')
+    }
   }
 
   async deposit(amount) {
@@ -110,7 +105,7 @@ class App extends Component {
             <main role="main" className="col-lg-12 d-flex text-center">
               <div className="content mr-auto ml-auto">
               <Tabs defaultActiveKey="profile" id="uncontrolled-tab-example">
-                <Tab eventKey="deposit" title="Deposit ETH">
+                <Tab eventKey="deposit" title="Deposit">
                   <div>
                     <br></br>
                     <h5>Current Ether balance: {this.state.ethBalance} ETH</h5>                    
@@ -142,7 +137,7 @@ class App extends Component {
                   </div>
                 </Tab>
 
-                <Tab eventKey="withdraw" title="Withdraw ETH">
+                <Tab eventKey="withdraw" title="Withdraw" >
                     <br></br>
                     <h5><b>Do you want to withdraw + take interest? </b></h5>
                     <br></br>
@@ -153,6 +148,10 @@ class App extends Component {
                   <div>
                     <button type='submit' className='btn btn-dark' onClick={(e) => this.withdraw(e)}>WITHDRAW!</button>
                   </div>
+                </Tab>
+                <Tab eventKey="borrow" title="Borrow" disabled>
+                </Tab>
+                <Tab eventKey="payoff" title="Payoff" disabled>
                 </Tab>
               </Tabs>
               </div>
