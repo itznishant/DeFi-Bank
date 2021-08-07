@@ -98,7 +98,7 @@ class App extends Component {
         <div className="container-fluid mt-5 text-center">
         <br></br>
           <h1>Welcome to dBank! </h1>
-          <h2>{this.state.account}</h2>
+          <h3>{this.state.account}</h3>
           
           <br></br>
           <div className="row">
@@ -143,12 +143,14 @@ class App extends Component {
                     <br></br>
                     <h5> Deposit balance: {this.state.depositETHbalance} ETH</h5>
                     <br></br>
-                    <h5> Interest balance: {this.state.tokenBalance} Tokens</h5>
-                    <br></br>
                   <div>
                     <button type='submit' className='btn btn-dark' onClick={(e) => this.withdraw(e)}>WITHDRAW!</button>
                   </div>
                 </Tab>
+                <Tab eventKey="interest" title="Interest">
+                    <br></br>                           
+                    <h5> Accrued Interest (tokens): {this.state.tokenBalance}</h5>
+                </Tab>                  
                 <Tab eventKey="borrow" title="Borrow" disabled>
                 </Tab>
                 <Tab eventKey="payoff" title="Payoff" disabled>
