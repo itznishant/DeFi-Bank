@@ -3,6 +3,7 @@ import dBank from '../abis/dBank.json'
 import React, { Component } from 'react';
 import Token from '../abis/Token.json'
 import dbank from '../defibank.png';
+import gitlogo from '../githublogo.png';
 import Web3 from 'web3';
 import './App.css';
 
@@ -87,13 +88,24 @@ class App extends Component {
         <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
           <a
             className="navbar-brand col-sm-3 col-md-2 mr-0"
+            href="https://itznishant.github.io/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+          <img src={dbank} className="App-logo" alt="logo" height="32"/>
+
+          <b> Portfolio</b>
+          </a>
+
+          <a
+            className="navbar-brand col-sm-3 col-md-2 mr-0"
             href="https://github.com/itznishant/"
             target="_blank"
             rel="noopener noreferrer"
           >
-        <img src={dbank} className="App-logo" alt="logo" height="32"/>
-          <b> GitHub </b>
-        </a>
+          <b>GitHub  </b>
+          <img src={gitlogo} className="App-logo" alt="gitlogo" height="32"/>
+          </a>
         </nav>
         <div className="container-fluid mt-5 text-center">
         <br></br>
