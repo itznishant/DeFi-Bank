@@ -6,11 +6,22 @@
 }
 
 .nav-tabs {
+    color: darkorchid;
     border-bottom: none;
+    width: max-content;
 }
 
-.nav-tabs .nav-link:hover{
+.nav-tabs .nav-link {  
     color: darkorchid;
+    text-decoration: none;
+}
+
+.nav-tabs .nav-link:hover {
+    color: darkorchid;
+    text-decoration: underline;
+    text-decoration-color: orange;
+    text-decoration-thickness: 4px ;
+    text-underline-offset: 6px;
 }
 
 body {
